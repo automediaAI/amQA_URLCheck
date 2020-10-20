@@ -19,13 +19,15 @@ table_name = os.environ.get("PRIVATE_TABLE_NAME")
 api_key = os.environ.get("PRIVATE_API_KEY")
 airtable = Airtable(base_key, table_name, api_key) #For production env
 
+
 #Airtable variables so if name changes will be easy to update here 
-viewToCheck = 'Embeds - JS'
+viewToCheck_JS = 'Embeds - JS'
+viewToCheck_JASP = 'Embeds - JASP'
 statusColumn = 'amService_RunStatus'
 statusGood = 'Standby'
 statusFail = 'Error - QA' #ie QA failed not actual amEmbed service 
 
-def checkLoop(viewToCheck=viewToCheck, statusColumn=statusColumn, statusGood=statusGood, statusFail=statusFail):
+def checkLoop(viewToCheck, statusColumn=statusColumn, statusGood=statusGood, statusFail=statusFail):
 	allRecords = airtable.get_all(view=viewToCheck) #get all data
 	for i in allRecords:
 			if "Prod_Ready" in i["fields"]: #Only working on prod ready ie checkboxed
@@ -41,7 +43,8 @@ def checkLoop(viewToCheck=viewToCheck, statusColumn=statusColumn, statusGood=sta
 					fields = {statusColumn: statusFail}
 					airtable.update(rec_ofAsked, fields)
 
-checkLoop()
+checkLoop(viewToCheck=viewToCheck_JS)
+checkLoop(viewToCheck=viewToCheck_JASP)
 
 
 ### Testing Section 
